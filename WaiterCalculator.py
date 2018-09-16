@@ -10,7 +10,7 @@ class Calcul(tk.Frame):
         self.root = root
         self.arw = arw 
         self.rw = 1
-        
+        self.month = 0
         self.start()
         
     def start(self):
@@ -30,21 +30,27 @@ class Calcul(tk.Frame):
         resleb.grid(column=5, row=0)
 
         self.new = tk.Button(text='Добавить день', command=self.new_day)
-        self.new.grid(column=3, row=arw)
+        self.mes = tk.Button(self.root, text='Общая', command=self.total)
+        self.tot = tk.Entry(self.root, width=15)
+        
         self.new_day()
         
-    def sm(self):
-        self.resl.delete(0, tk.END)
-        if self.st.get().isdigit() and self.en.get().isdigit(): 
-            nach = float(self.st.get())  
-            con = float(self.en.get())
-            if nach > con:
-                pass
+    def total(self):
+        self.tot.delete(0, tk.END)
+        self.tot.insert(tk.END, str(self.month))
+    
+    def sm(self, st, en, ta, resl):
+        resl.delete(0, tk.END)
+        tx = 0
+        
+        if st.get().isdigit() and en.get().isdigit():
+            nach = float(st.get())  
+            con = float(en.get())
+
             
             if con == 1:
                 con = 25
             chas = con - nach
-            tx = 0
             if 18 > nach:
                 tx = (18 - nach) * 49
                 chas = chas - (18 - nach)
@@ -53,46 +59,52 @@ class Calcul(tk.Frame):
                 tx += chas * 21
             elif con > 22:
                 tx += (22 - nach) * 21 + (chas - (22 - nach)) * 25.2
-        
-            if self.ta.get():
-                tea = float(self.ta.get())
-                tx += tea
+              
+            if nach == 0 or con == 0:
+                tx =0
+            
+        if ta.get():
+            tea = float(ta.get())
+            tx += tea
+        resl.insert(tk.END, str(tx))
+        self.month += tx
     
-            self.resl.insert(tk.END, 'Результат = ' + str(tx) + ' руб')
     
     def new_day(self):
-        self.st = tk.StringVar()
-        self.en = tk.StringVar()
-        self.ta = tk.StringVar()
-        
-        
+        st = tk.StringVar()
+        en = tk.StringVar()
+        ta = tk.StringVar()
+        re = tk.StringVar()
         ent = tk.Entry(self.root, width='15')
         ent.grid(column=0,row=self.rw, padx=5)
     
-        start = tk.Entry(self.root, width='5', textvariable = self.st)
+        start = tk.Entry(self.root, width='5', textvariable = st)
         start.grid(column=1, row=self.rw, padx='10')
     
-        end = tk.Entry(self.root, width='5', textvariable = self.en)
+        end = tk.Entry(self.root, width='5', textvariable = en)
         end.grid(column=2, row=self.rw, padx='10')
 
-        tea = tk.Entry(self.root, width='5', textvariable = self.ta)
+        tea = tk.Entry(self.root, width='5', textvariable = ta)
         tea.grid(column=3, row=self.rw)
     
-        res_but = tk.Button(self.root, text='Посчитать', command=self.sm)
+        res_but = tk.Button(self.root, text='Посчитать')
         res_but.grid(column=4, row=self.rw, padx=10) 
 
-        self.resl = tk.Entry(self.root,  width=20)
-        self.resl.grid(column=5, row=self.rw, padx=10) 
+        resl = tk.Entry(self.root,  width=10, textvariable = re)
+        resl.grid(column=5, row=self.rw, padx=10)
+        res_but['command'] = lambda : self.sm(st, en, ta, resl)
         
         self.new.grid(column=3, row=self.arw)
+        self.mes.grid(column=5, row=self.arw)
+        self.tot.grid(column=5, row=self.arw + 1)
         self.rw += 1
         self.arw += 1
-
+    
 def main():
     root = tk.Tk()
     root.geometry('600x250')
     root.title('Waiters calculator')
-    a = Calcul(root, arw)
+    Calcul(root, arw)
     root.mainloop()
 
 if __name__ == '__main__':
