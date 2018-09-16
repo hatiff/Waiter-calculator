@@ -103,7 +103,7 @@ class Calcul(tk.Frame):
 def main():
     root = tk.Tk()
     root.geometry('600x250')
-    root.title('Waiters calculator')
+    root.title('Waiters calculator v.0.8.0')
     Calcul(root, arw)
     root.mainloop()
 
